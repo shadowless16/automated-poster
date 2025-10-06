@@ -1,0 +1,79 @@
+{
+  "twitter": {
+    "api_key": "YOUR_TWITTER_API_KEY",
+    "api_secret": "YOUR_TWITTER_API_SECRET",
+    "access_token": "YOUR_ACCESS_TOKEN",
+    "access_token_secret": "YOUR_ACCESS_TOKEN_SECRET",
+    "bearer_token": "YOUR_BEARER_TOKEN"
+  },
+  "linkedin": {
+    "access_token": "YOUR_LINKEDIN_ACCESS_TOKEN",
+    "person_id": "YOUR_PERSON_ID"
+  },
+  "gemini": {
+    "api_key": "YOUR_GEMINI_API_KEY",
+    "model": "gemini-2.5-flash"
+  },
+  "content_pillars": {
+    "build_in_public": {
+      "weight": 25,
+      "frequency": "2x/week",
+      "examples": [
+        "Spent 6 hours debugging... turns out I forgot to save the file 💀"
+      ]
+    },
+    "learning_journey": {
+      "weight": 25,
+      "frequency": "2x/week",
+      "examples": [
+        "Learning Next.js and AI at the same time. Am I crazy? Probably. Worth it? 100%"
+      ]
+    },
+    "engagement_questions": {
+      "weight": 25,
+      "frequency": "2x/week",
+      "examples": [
+        "Chrome vs Brave vs Arc - which browser are you coding on?"
+      ]
+    },
+    "tech_threads": {
+      "weight": 15,
+      "frequency": "1x/week",
+      "examples": [
+        "5 things I wish I knew before learning backend dev (thread) 🧵"
+      ]
+    },
+    "real_talk": {
+      "weight": 10,
+      "frequency": "1x/week",
+      "examples": [
+        "Being a student dev in Africa hits different. Internet costs more than lunch."
+      ]
+    }
+  },
+  "brand_voice": {
+    "stage": "Student developer / Intermediate beginner",
+    "tone": "Casual, relatable, honest about the learning process",
+    "themes": [
+      "Learning in public - sharing wins AND struggles",
+      "Building while learning (not waiting to be 'ready')",
+      "AI-assisted learning and pushing boundaries",
+      "African student dev perspective",
+      "Real talk about student dev life"
+    ]
+  },
+  "posting_schedule": {
+    "timezone": "WAT (West Africa Time, UTC+1)",
+    "weekly_frequency": 8,
+    "schedule": [
+      {"day": "Monday", "time": "07:30", "type": "engagement_questions", "platform": "twitter"},
+      {"day": "Monday", "time": "19:00", "type": "learning_journey", "platform": "linkedin"},
+      {"day": "Tuesday", "time": "08:00", "type": "build_in_public", "platform": "twitter"},
+      {"day": "Wednesday", "time": "12:00", "type": "tech_threads", "platform": "twitter"},
+      {"day": "Wednesday", "time": "18:30", "type": "learning_journey", "platform": "linkedin"},
+      {"day": "Thursday", "time": "07:30", "type": "engagement_questions", "platform": "twitter"},
+      {"day": "Friday", "time": "16:00", "type": "build_in_public", "platform": "twitter"},
+      {"day": "Saturday", "time": "10:00", "type": "real_talk", "platform": "both"}
+    ]
+  }
+}
