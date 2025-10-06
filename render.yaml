@@ -1,9 +1,9 @@
 services:
-  - type: worker
+  - type: web
     name: social-media-bot
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python scheduler.py
+    startCommand: gunicorn web_server:app
     envVars:
       - key: TWITTER_API_KEY
         sync: false

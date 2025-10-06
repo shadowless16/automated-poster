@@ -26,15 +26,15 @@ git push -u origin main
 2. Sign up with GitHub (free)
 3. Authorize Render to access your repos
 
-## Step 3: Deploy Background Worker
+## Step 3: Deploy Web Service
 
-1. Click "New +" → "Background Worker"
+1. Click "New +" → "Web Service"
 2. Connect your `bot_poster` repository
 3. Configure:
    - **Name:** social-media-bot
    - **Environment:** Python 3
    - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `python scheduler.py`
+   - **Start Command:** `gunicorn web_server:app`
    - **Instance Type:** Free
 
 ## Step 4: Add Environment Variables
@@ -54,13 +54,16 @@ GEMINI_API_KEY = AIzaSyDvvzLZ1AGeMrWBfPZUt4mgI-svbP7X03k
 
 ## Step 5: Deploy
 
-1. Click "Create Background Worker"
+1. Click "Create Web Service"
 2. Wait 2-3 minutes for build
-3. Check logs - you should see:
+3. You'll get a URL like: `https://social-media-bot.onrender.com`
+4. Visit the URL - you should see:
+   ```json
+   {"status": "running", "bot": "Social Media Auto-Poster", "posts_per_week": 24}
    ```
-   🤖 Scheduler started - 24 posts per week (3-4 per day)
-   📅 Schedule (WAT - West Africa Time):
-   ...
+5. Check logs - you should see:
+   ```
+   🤖 Scheduler started - 24 posts per week
    ```
 
 ## Step 6: Monitor
@@ -69,14 +72,21 @@ GEMINI_API_KEY = AIzaSyDvvzLZ1AGeMrWBfPZUt4mgI-svbP7X03k
 - **Metrics:** Check "Metrics" for uptime
 - **Manual Deploy:** Click "Manual Deploy" to restart
 
-## Troubleshooting
+## Step 6: Keep Bot Awake (IMPORTANT)
 
-**Bot sleeps after 15 min:**
-Render free tier may sleep. Solution:
+Render free tier sleeps after 15 min inactivity. Keep it awake:
+
 1. Go to https://cron-job.org (free)
 2. Create account
-3. Add job: Ping `https://social-media-bot.onrender.com` every 10 minutes
-4. This keeps bot awake
+3. Add new cron job:
+   - **Title:** Keep Bot Awake
+   - **URL:** `https://social-media-bot.onrender.com/health`
+   - **Schedule:** Every 10 minutes
+4. Save and enable
+
+Now your bot stays awake 24/7 and posts automatically!
+
+## Troubleshooting
 
 **Import errors:**
 Check logs. If missing packages, add to `requirements.txt` and redeploy.
