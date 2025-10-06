@@ -78,25 +78,17 @@ scheduler_thread.start()
 @app.route('/')
 def home():
     """Health check endpoint"""
-    return jsonify({
-        "status": "running",
-        "bot": "Social Media Auto-Poster",
-        "posts_per_week": 24,
-        "message": "Bot is alive and posting!"
-    })
+    return "OK", 200
 
 @app.route('/health')
 def health():
     """Health check for monitoring"""
-    return jsonify({"status": "ok"}), 200
+    return "OK", 200
 
 @app.route('/status')
 def status():
     """Get bot status"""
-    return jsonify({
-        "scheduler": "running",
-        "next_run": str(schedule.next_run()) if schedule.jobs else "No jobs scheduled"
-    })
+    return jsonify({"status": "running"}), 200
 
 if __name__ == '__main__':
     import os
