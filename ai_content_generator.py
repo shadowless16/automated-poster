@@ -114,32 +114,40 @@ Generate ONLY the {'thread' if is_thread else 'post'} text."""
             
             # Long post once per day (evening posts)
             if hour >= 18:
-                length = "200-300 words (detailed story or insight)"
+                length = "150-200 words"
             # Mid-length posts
             elif hour >= 12:
-                length = "100-150 words (concise but meaningful)"
+                length = "80-120 words"
             # Short posts (morning)
             else:
-                length = "50-80 words (quick thought or question)"
+                length = "40-70 words"
             
-            prompt = f"""You are a {self.stage} posting on LinkedIn. {self.tone}.
+            prompt = f"""You are a {self.stage} from Nigeria posting on LinkedIn. {self.tone}.
 
 Content Pillar: {pillar.replace('_', ' ').title()}
 Theme: {brand_theme}
 Example: {pillar_data['examples'][0]}
 {f'Context: {custom_context}' if custom_context else ''}
 
-Requirements:
+STYLE REQUIREMENTS:
 - Length: {length}
-- Casual but thoughtful tone
-- Share learning, building, or real experiences
-- NOT overly professional - sound like a student
-- Use line breaks for readability
-- End with question or insight
-- 2-3 hashtags
-- Be relatable and honest
-- NO markdown formatting (no *, **, _, etc.)
-- Plain text only with emojis
+- Proper Nigerian English (correct grammar, professional but casual)
+- Use natural Nigerian expressions like: "honestly", "this thing", "I'm learning", "it's not easy", "step by step"
+- Casual, relatable tone - like talking to a colleague
+- Share real experiences from student dev life
+- Use simple, direct sentences
+- Avoid overly American phrases like "aha moment", "game changer", "deep dive"
+- Maximum 2 emojis (use sparingly: 😅 💪 🔥 ✨ 🚀)
+- End with simple question or thought
+- Add 2-3 hashtags at the end
+
+FORMATTING RULES:
+- NO markdown (no *, **, _, etc.)
+- NO excessive punctuation (!!!, ???, ...)
+- Use single line breaks between paragraphs
+- Plain text only
+- Keep it simple and direct
+- Proper grammar and spelling
 
 Generate ONLY the post text."""
         else:
@@ -151,6 +159,10 @@ Generate ONLY the post text."""
         
         response = self.model.generate_content(prompt)
         content = response.text.strip()
+        
+        # Decode HTML entities (fix &#39; to ', &quot; to ", etc.)
+        import html
+        content = html.unescape(content)
         
         if platform != 'both':
             self.save_history(pillar, content)
