@@ -6,16 +6,24 @@ from flask import Flask, jsonify
 import threading
 import schedule
 import time
-from bot import SocialMediaBot
-from ai_content_generator import AIContentGenerator
 
 app = Flask(__name__)
-bot = SocialMediaBot()
-ai_gen = AIContentGenerator()
+bot = None
+ai_gen = None
+
+def init_bot():
+    """Lazy initialization of bot"""
+    global bot, ai_gen
+    if bot is None:
+        from bot import SocialMediaBot
+        from ai_content_generator import AIContentGenerator
+        bot = SocialMediaBot()
+        ai_gen = AIContentGenerator()
 
 def post_content(pillar, platform):
     """Generate and post content"""
     try:
+        init_bot()
         print(f"\n⏰ Posting at {time.strftime('%H:%M')} WAT")
         if platform == 'twitter':
             content, _ = ai_gen.generate_post(pillar=pillar, platform='twitter')
@@ -78,17 +86,17 @@ scheduler_thread.start()
 @app.route('/')
 def home():
     """Health check endpoint"""
-    return "OK", 200
+    return "OK"
 
 @app.route('/health')
 def health():
     """Health check for monitoring"""
-    return "OK", 200
+    return "OK"
 
 @app.route('/status')
 def status():
     """Get bot status"""
-    return jsonify({"status": "running"}), 200
+    return jsonify({"status": "running"})
 
 if __name__ == '__main__':
     import os
