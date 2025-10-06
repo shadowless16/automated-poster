@@ -5,8 +5,36 @@ from datetime import datetime
 
 class AIContentGenerator:
     def __init__(self, config_file='config.json'):
-        with open(config_file, 'r') as f:
-            self.config = json.load(f)
+        import os
+        if os.path.exists(config_file):
+            with open(config_file, 'r') as f:
+                self.config = json.load(f)
+        else:
+            # Load from environment variables (for Render deployment)
+            self.config = {
+                'gemini': {
+                    'api_key': os.environ.get('GEMINI_API_KEY'),
+                    'model': 'gemini-2.5-flash'
+                },
+                'content_pillars': {
+                    'build_in_public': {'weight': 20, 'examples': ['Building in public']},
+                    'learning_journey': {'weight': 30, 'examples': ['Learning journey']},
+                    'engagement_questions': {'weight': 30, 'examples': ['Engagement question']},
+                    'tech_threads': {'weight': 10, 'examples': ['Tech thread']},
+                    'real_talk': {'weight': 10, 'examples': ['Real talk']}
+                },
+                'brand_voice': {
+                    'stage': 'Student developer / Intermediate beginner',
+                    'tone': 'Casual, relatable, honest about the learning process',
+                    'themes': [
+                        'Learning in public - sharing wins AND struggles',
+                        'Building while learning (not waiting to be ready)',
+                        'AI-assisted learning and pushing boundaries',
+                        'African student dev perspective',
+                        'Real talk about student dev life'
+                    ]
+                }
+            }
         
         genai.configure(api_key=self.config['gemini']['api_key'])
         self.model = genai.GenerativeModel(self.config['gemini']['model'])
@@ -26,7 +54,8 @@ class AIContentGenerator:
             for p in self.pillars:
                 if p not in self.history['pillar_counts']:
                     self.history['pillar_counts'][p] = 0
-        except FileNotFoundError:
+        except (FileNotFoundError, PermissionError):
+            # On Render, file system may be read-only
             self.history = {'posts': [], 'pillar_counts': {p: 0 for p in self.pillars}}
     
     def save_history(self, pillar, content):
@@ -36,8 +65,12 @@ class AIContentGenerator:
             'timestamp': datetime.now().isoformat()
         })
         self.history['pillar_counts'][pillar] += 1
-        with open(self.history_file, 'w') as f:
-            json.dump(self.history, f, indent=2)
+        try:
+            with open(self.history_file, 'w') as f:
+                json.dump(self.history, f, indent=2)
+        except (PermissionError, OSError):
+            # On Render, file system may be read-only - skip saving
+            pass
     
     def select_pillar(self, platform=None):
         weights = []

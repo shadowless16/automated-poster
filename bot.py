@@ -6,8 +6,29 @@ from ai_content_generator import AIContentGenerator
 
 class SocialMediaBot:
     def __init__(self, config_file='config.json'):
-        with open(config_file, 'r') as f:
-            self.config = json.load(f)
+        import os
+        if os.path.exists(config_file):
+            with open(config_file, 'r') as f:
+                self.config = json.load(f)
+        else:
+            # Load from environment variables (for Render deployment)
+            self.config = {
+                'twitter': {
+                    'api_key': os.environ.get('TWITTER_API_KEY'),
+                    'api_secret': os.environ.get('TWITTER_API_SECRET'),
+                    'access_token': os.environ.get('TWITTER_ACCESS_TOKEN'),
+                    'access_token_secret': os.environ.get('TWITTER_ACCESS_TOKEN_SECRET'),
+                    'bearer_token': os.environ.get('TWITTER_BEARER_TOKEN')
+                },
+                'linkedin': {
+                    'access_token': os.environ.get('LINKEDIN_ACCESS_TOKEN'),
+                    'person_id': os.environ.get('LINKEDIN_PERSON_ID')
+                },
+                'gemini': {
+                    'api_key': os.environ.get('GEMINI_API_KEY'),
+                    'model': 'gemini-2.5-flash'
+                }
+            }
         self._setup_twitter()
         self.ai_generator = AIContentGenerator(config_file)
     
