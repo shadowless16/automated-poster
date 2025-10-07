@@ -4,9 +4,16 @@ import argparse
 from datetime import datetime
 from ai_content_generator import AIContentGenerator
 
+import os
+import sys
+
+# Disable all print output in production
+if os.environ.get('RENDER'):
+    sys.stdout = open(os.devnull, 'w')
+    sys.stderr = open(os.devnull, 'w')
+
 class SocialMediaBot:
     def __init__(self, config_file='config.json'):
-        import os
         if os.path.exists(config_file):
             with open(config_file, 'r') as f:
                 self.config = json.load(f)

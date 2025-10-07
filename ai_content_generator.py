@@ -2,6 +2,13 @@ import google.generativeai as genai
 import json
 import random
 from datetime import datetime
+import os
+import sys
+
+# Disable all print output in production
+if os.environ.get('RENDER'):
+    sys.stdout = open(os.devnull, 'w')
+    sys.stderr = open(os.devnull, 'w')
 
 class AIContentGenerator:
     def __init__(self, config_file='config.json'):

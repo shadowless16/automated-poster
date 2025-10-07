@@ -6,6 +6,7 @@ from flask import Flask, jsonify
 import threading
 import schedule
 import time
+import os
 
 app = Flask(__name__)
 bot = None
@@ -24,21 +25,18 @@ def post_content(pillar, platform):
     """Generate and post content"""
     try:
         init_bot()
-        print(f"\n⏰ Posting at {time.strftime('%H:%M')} WAT")
         if platform == 'twitter':
             content, _ = ai_gen.generate_post(pillar=pillar, platform='twitter')
-            print(f"[{pillar.upper()}] X POST: {content[:50]}...")
             bot.post_to_twitter(content)
         elif platform == 'linkedin':
             content, _ = ai_gen.generate_post(pillar=pillar, platform='linkedin')
-            print(f"[{pillar.upper()}] LINKEDIN POST: {content[:50]}...")
             bot.post_to_linkedin(content)
         elif platform == 'both':
             content, _ = ai_gen.generate_post(pillar=pillar, platform='both')
             bot.post_to_twitter(content['twitter'])
             bot.post_to_linkedin(content['linkedin'])
-    except Exception as e:
-        print(f"Error posting: {e}")
+    except:
+        pass
 
 # Schedule all posts (24 per week)
 schedule.every().monday.at("07:30").do(lambda: post_content('engagement_questions', 'twitter'))
@@ -74,7 +72,6 @@ schedule.every().sunday.at("17:00").do(lambda: post_content('real_talk', 'twitte
 
 def run_scheduler():
     """Run scheduler in background thread"""
-    print("🤖 Scheduler started - 24 posts per week")
     while True:
         schedule.run_pending()
         time.sleep(60)
