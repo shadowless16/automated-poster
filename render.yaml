@@ -3,7 +3,7 @@ services:
     name: social-media-bot
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn web_server:app
+    startCommand: gunicorn --timeout 120 --workers 1 web_server:app
     envVars:
       - key: TWITTER_API_KEY
         sync: false
