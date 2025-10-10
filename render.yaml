@@ -3,8 +3,10 @@ services:
     name: social-media-bot
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --timeout 120 --workers 1 web_server:app
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --timeout 120 --workers 1 --log-level error web_server:app
     envVars:
+      - key: RENDER
+        value: "1"
       - key: TWITTER_API_KEY
         sync: false
       - key: TWITTER_API_SECRET
